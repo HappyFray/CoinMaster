@@ -1,8 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import json
-from datetime import datetime
+from datetime import datetime, timedelta
 import time
+import os
 
 HEADERS = {
     "User-Agent": "Mozilla/5.0 (CoinMasterCollector)"
@@ -13,6 +14,9 @@ SOURCES = {
     "PocketTactics": "https://www.pockettactics.com/coin-master/free-spins",
     "Escapist": "https://www.escapistmagazine.com/coin-master-daily-free-spins-coin-links/"
 }
+
+JSON_FILE = "spins_today.json"
+MAX_AGE_HOURS = 24
 
 def fetch_links(url):
     r = requests.get(url, headers=HEADERS, timeout=15)
@@ -26,6 +30,18 @@ def fetch_links(url):
 
     return links
 
+def load_existing():
+    if not os.path.exists(JSON_FILE):
+        return {}
+
+    with open(JSON_FILE, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    existing = {}
+    for item in data.get("links", []):
+        existing[item["url"]] = datetime.fromisoformat(item["first_seen"])
+    return existing
+
 def build_html(links):
     rows = ""
     for i, link in enumerate(links, start=1):
@@ -34,6 +50,7 @@ def build_html(links):
             <td>{i}</td>
             <td><a href="{link['url']}" target="_blank">{link['url']}</a></td>
             <td>{link['source']}</td>
+            <td>{link['first_seen']}</td>
         </tr>
         """
 
@@ -42,7 +59,7 @@ def build_html(links):
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<title>Coin Master – Daily Reward Links</title>
+<title>Coin Master – Rewards (letzte 24h)</title>
 <style>
 body {{ font-family: Arial, sans-serif; background:#111; color:#eee; }}
 table {{ border-collapse: collapse; width: 100%; }}
@@ -52,11 +69,11 @@ a {{ color: #4da6ff; word-break: break-all; }}
 </style>
 </head>
 <body>
-<h2>🎁 Coin Master – Daily Reward Links</h2>
-<p>Aktualisiert: {datetime.utcnow().isoformat()} UTC</p>
+<h2>🎁 Coin Master – Reward Links (letzte 24h)</h2>
+<p>Letztes Update: {datetime.utcnow().isoformat()} UTC</p>
 <table>
 <tr>
-<th>#</th><th>Link</th><th>Quelle</th>
+<th>#</th><th>Link</th><th>Quelle</th><th>First Seen (UTC)</th>
 </tr>
 {rows}
 </table>
@@ -65,45 +82,50 @@ a {{ color: #4da6ff; word-break: break-all; }}
 """
 
 def main():
-    unique_links = {}
-    results = []
+    now = datetime.utcnow()
+    cutoff = now - timedelta(hours=MAX_AGE_HOURS)
+
+    existing_links = load_existing()
+    collected = {}
 
     for source, url in SOURCES.items():
         print(f"[+] Sammle von {source}")
         try:
             links = fetch_links(url)
             for link in links:
-                if link not in unique_links:
-                    unique_links[link] = source
+                if link in existing_links:
+                    collected[link] = existing_links[link]
+                else:
+                    collected[link] = now
             time.sleep(2)
         except Exception as e:
             print(f"[!] Fehler bei {source}: {e}")
 
-    for url, source in unique_links.items():
-        results.append({
-            "url": url,
-            "source": source
-        })
+    # Filter: nur letzte 24h
+    final_links = []
+    for url, first_seen in collected.items():
+        if first_seen >= cutoff:
+            final_links.append({
+                "url": url,
+                "source": next((s for s,u in SOURCES.items() if s), "unknown"),
+                "first_seen": first_seen.isoformat()
+            })
 
-    results.sort(key=lambda x: x["source"])
+    final_links.sort(key=lambda x: x["first_seen"], reverse=True)
 
-    # JSON
-    json_data = {
-        "updated": datetime.utcnow().isoformat() + "Z",
-        "count": len(results),
-        "links": results
+    data = {
+        "updated": now.isoformat() + "Z",
+        "count": len(final_links),
+        "links": final_links
     }
 
-    with open("spins_today.json", "w", encoding="utf-8") as f:
-        json.dump(json_data, f, indent=2, ensure_ascii=False)
+    with open(JSON_FILE, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
 
-    # HTML
-    html = build_html(results)
     with open("index.html", "w", encoding="utf-8") as f:
-        f.write(html)
+        f.write(build_html(final_links))
 
-    print(f"\n✅ Fertig: {len(results)} eindeutige Links gespeichert")
-    print("📄 index.html ist klickbar")
+    print(f"\n✅ Update fertig – {len(final_links)} Links (≤24h)")
 
 if __name__ == "__main__":
     main()
