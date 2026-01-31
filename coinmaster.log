@@ -168,3 +168,61 @@
  * Running on http://127.0.0.1:5000
 2026-01-31 19:57:18,173 [INFO] [33mPress CTRL+C to quit[0m
 2026-01-31 19:57:28,321 [INFO] 127.0.0.1 - - [31/Jan/2026 19:57:28] "GET / HTTP/1.1" 200 -
+2026-01-31 20:04:21,233 [INFO] Scraping TechGameWorld
+2026-01-31 20:04:21,850 [INFO] Scraping Giveaway48
+2026-01-31 20:04:22,392 [INFO] Scraped candidates: 65
+2026-01-31 20:04:23,185 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILDscTUh_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,219 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_RICHtIeQjj_20260118 (final static.moonactive.net)
+2026-01-31 20:04:23,233 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_TWIdqSEhD_20260131 (final static.moonactive.net)
+2026-01-31 20:04:23,247 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_LINEygSaLN_20260131 (final static.moonactive.net)
+2026-01-31 20:04:23,259 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_INSaLSuKN_20260131 (final static.moonactive.net)
+2026-01-31 20:04:23,279 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_HELPcpvYhu_20260131 (final static.moonactive.net)
+2026-01-31 20:04:23,293 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBTSEqIw_20260131 (final static.moonactive.net)
+2026-01-31 20:04:23,307 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILotDIFY_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,320 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBeqhjID_20260130 (final static.moonactive.net)
+2026-01-31 20:04:23,333 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_RICHsleSWU_20260118 (final static.moonactive.net)
+2026-01-31 20:04:23,346 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILmqfccX_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,360 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBLatPAc_20260130 (final static.moonactive.net)
+2026-01-31 20:04:23,374 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_INSaeRdjH_20260130 (final static.moonactive.net)
+2026-01-31 20:04:23,387 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_LINEpCteDF_20260130 (final static.moonactive.net)
+2026-01-31 20:04:23,401 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_TWIPHfAds_20260130 (final static.moonactive.net)
+2026-01-31 20:04:23,415 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_HELPlhsNHo_20260130 (final static.moonactive.net)
+2026-01-31 20:04:23,429 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILtMhXCP_20260126 (final static.moonactive.net)
+2026-01-31 20:04:23,442 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBzZprzA_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,456 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILzaPbxf_20260125 (final static.moonactive.net)
+2026-01-31 20:04:23,470 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_TWIyukyRP_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,483 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_INSVIMtZt_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,496 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_RICHeZGFOh_20260118 (final static.moonactive.net)
+2026-01-31 20:04:23,510 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_CHATBOLMdUu_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,524 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_LINEyqSvtn_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,540 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBZvSWxH_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,559 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_HELPNsKObU_20260129 (final static.moonactive.net)
+2026-01-31 20:04:23,575 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILlNybyS_20260128 (final static.moonactive.net)
+2026-01-31 20:04:23,589 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILBHeygH_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,604 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_TWIvcjRps_20260128 (final static.moonactive.net)
+2026-01-31 20:04:23,617 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_INSaXueJm_20260128 (final static.moonactive.net)
+2026-01-31 20:04:23,630 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILyWKHAq_20260126 (final static.moonactive.net)
+2026-01-31 20:04:23,644 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBhblYwg_20260128 (final static.moonactive.net)
+2026-01-31 20:04:23,659 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_HELPjAvyLm_20260128 (final static.moonactive.net)
+2026-01-31 20:04:23,672 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBCkcvEx_20260131 (final static.moonactive.net)
+2026-01-31 20:04:23,686 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_RICHBpJvCt_20260118 (final static.moonactive.net)
+2026-01-31 20:04:23,702 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILWjtUzB_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,716 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_LINEnDpklS_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,730 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_TWIZPZwFK_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,743 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_INSAqnXhQ_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,757 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBgRSfiS_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,771 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILyEDKiH_20260125 (final static.moonactive.net)
+2026-01-31 20:04:23,784 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBupBfsC_20260126 (final static.moonactive.net)
+2026-01-31 20:04:23,797 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_CHATBmNrTgh_20260126 (final static.moonactive.net)
+2026-01-31 20:04:23,812 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBeNjNkZ_20260126 (final static.moonactive.net)
+2026-01-31 20:04:23,825 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_RICHeHehqr_20260118 (final static.moonactive.net)
+2026-01-31 20:04:23,838 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_EMAILtxbtBV_20260128 (final static.moonactive.net)
+2026-01-31 20:04:23,852 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_HELPkUtNpm_20260127 (final static.moonactive.net)
+2026-01-31 20:04:23,866 [INFO] Stored valid allowed link: https://static.moonactive.net/static/coinmaster/reward/reward2.html?c=pe_FCBIAPHim_20260127 (final static.moonactive.net)
+2026-01-31 20:04:25,279 [INFO] Run complete — 48/65 accepted (final domain == static.moonactive.net) in 4.0s
+2026-01-31 20:04:25,279 [INFO] Removed None expired/invalid entries
+2026-01-31 20:04:25,279 [INFO] Starting local Web UI on http://127.0.0.1:5000
+2026-01-31 20:04:25,286 [INFO] [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on http://127.0.0.1:5000
+2026-01-31 20:04:25,286 [INFO] [33mPress CTRL+C to quit[0m
+2026-01-31 20:04:28,466 [INFO] 127.0.0.1 - - [31/Jan/2026 20:04:28] "GET / HTTP/1.1" 200 -
