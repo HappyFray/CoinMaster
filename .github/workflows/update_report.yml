@@ -1,0 +1,53 @@
+name: Generate CoinMaster Report
+
+# schedule and manual trigger
+on:
+  schedule:
+    - cron: '*/30 * * * *'  # alle 30 Minuten
+  workflow_dispatch:      # manuell auslösbar
+
+# allow the workflow to push commits
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run collector (generate HTML)
+        run: |
+          python coinmaster_collector_ultimate.py
+
+      - name: Commit generated HTML to gh-pages branch
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          # create branch gh-pages (force update)
+          git checkout --orphan gh-pages
+          git rm -rf .
+          # copy report file(s)
+          git checkout --quiet main -- coinmaster.html || true
+          # ensure file exists
+          if [ ! -f coinmaster.html ]; then
+            echo "<html><body><p>No report generated</p></body></html>" > coinmaster.html
+          fi
+          git add coinmaster.html
+          git commit -m "Update report $(date -u +'%Y-%m-%d %H:%M:%S')"
+          git push --force origin gh-pages
