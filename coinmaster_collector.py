@@ -1,131 +1,133 @@
-import requests
+#!/usr/bin/env python3
 from bs4 import BeautifulSoup
-import json
 from datetime import datetime, timedelta
-import time
-import os
+import requests, json, os
 
-HEADERS = {
-    "User-Agent": "Mozilla/5.0 (CoinMasterCollector)"
-}
+DATA_FILE = "links.json"
+SOURCES = [
+    {"name": "TechGameWorld", "url": "https://techgameworld.com/coin-master-free-spins/"},
+    {"name": "Giveaway48",    "url": "https://giveaway48.com/coin-master/"}
+]
 
-SOURCES = {
-    "BestCMStrategies": "https://bestcmstrategies.com/coin-master-free-spins-links/",
-    "PocketTactics": "https://www.pockettactics.com/coin-master/free-spins",
-    "Escapist": "https://www.escapistmagazine.com/coin-master-daily-free-spins-coin-links/"
-}
-
-JSON_FILE = "spins_today.json"
-MAX_AGE_HOURS = 24
-
-def fetch_links(url):
-    r = requests.get(url, headers=HEADERS, timeout=15)
-    r.raise_for_status()
-    soup = BeautifulSoup(r.text, "html.parser")
-
-    links = set()
-    for a in soup.find_all("a", href=True):
-        if "rewards.coinmaster.com" in a["href"]:
-            links.add(a["href"].strip())
-
-    return links
-
-def load_existing():
-    if not os.path.exists(JSON_FILE):
-        return {}
-
-    with open(JSON_FILE, "r", encoding="utf-8") as f:
+# 1. Bestehende Daten laden (oder neu anlegen)
+if os.path.exists(DATA_FILE):
+    with open(DATA_FILE, "r", encoding="utf-8") as f:
         data = json.load(f)
+else:
+    data = {"links": []}
 
-    existing = {}
-    for item in data.get("links", []):
-        existing[item["url"]] = datetime.fromisoformat(item["first_seen"])
-    return existing
+now = datetime.utcnow()
 
-def build_html(links):
-    rows = ""
-    for i, link in enumerate(links, start=1):
-        rows += f"""
-        <tr>
-            <td>{i}</td>
-            <td><a href="{link['url']}" target="_blank">{link['url']}</a></td>
-            <td>{link['source']}</td>
-            <td>{link['first_seen']}</td>
-        </tr>
-        """
-
-    return f"""
-<!DOCTYPE html>
-<html lang="de">
-<head>
-<meta charset="UTF-8">
-<title>Coin Master – Rewards (letzte 24h)</title>
-<style>
-body {{ font-family: Arial, sans-serif; background:#111; color:#eee; }}
-table {{ border-collapse: collapse; width: 100%; }}
-th, td {{ padding: 10px; border: 1px solid #444; }}
-th {{ background: #222; }}
-a {{ color: #4da6ff; word-break: break-all; }}
-</style>
-</head>
-<body>
-<h2>🎁 Coin Master – Reward Links (letzte 24h)</h2>
-<p>Letztes Update: {datetime.utcnow().isoformat()} UTC</p>
-<table>
-<tr>
-<th>#</th><th>Link</th><th>Quelle</th><th>First Seen (UTC)</th>
-</tr>
-{rows}
-</table>
-</body>
-</html>
-"""
-
-def main():
-    now = datetime.utcnow()
-    cutoff = now - timedelta(hours=MAX_AGE_HOURS)
-
-    existing_links = load_existing()
-    collected = {}
-
-    for source, url in SOURCES.items():
-        print(f"[+] Sammle von {source}")
-        try:
-            links = fetch_links(url)
-            for link in links:
-                if link in existing_links:
-                    collected[link] = existing_links[link]
-                else:
-                    collected[link] = now
-            time.sleep(2)
-        except Exception as e:
-            print(f"[!] Fehler bei {source}: {e}")
-
-    # Filter: nur letzte 24h
-    final_links = []
-    for url, first_seen in collected.items():
-        if first_seen >= cutoff:
-            final_links.append({
-                "url": url,
-                "source": next((s for s,u in SOURCES.items() if s), "unknown"),
-                "first_seen": first_seen.isoformat()
+# 2. Neue Links von definierten Quellen sammeln
+for src in SOURCES:
+    try:
+        res = requests.get(src["url"], timeout=10)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, "html.parser")
+    except Exception as e:
+        print(f"Fehler beim Laden von {src['name']}: {e}")
+        continue
+    for a in soup.find_all("a", href=True):
+        href = a["href"].strip()
+        if not href.startswith("http"):
+            continue
+        # Bekannte interne oder App-Store-Links überspringen
+        if any(ex in href for ex in ["coinmastergame.com", "facebook.com", "twitter.com",
+                                      "instagram.com", "play.google.com", "apps.apple.com"]):
+            continue
+        # Neuen Link hinzufügen
+        if not any(entry["url"] == href for entry in data["links"]):
+            data["links"].append({
+                "url": href,
+                "source": src["name"],
+                "first_seen": now.isoformat()
             })
 
-    final_links.sort(key=lambda x: x["first_seen"], reverse=True)
+# 3. Links prüfen und aktualisieren
+valid_links = []
+removed_count = expired_count = 0
+for entry in data["links"]:
+    first_seen = datetime.fromisoformat(entry["first_seen"])
+    age = now - first_seen
+    # Link abgelaufen nach 72 Stunden
+    if age > timedelta(hours=72):
+        expired_count += 1
+        continue
+    # HTTP-Status prüfen (200=OK)
+    try:
+        resp = requests.head(entry["url"], allow_redirects=True, timeout=5)
+        status = resp.status_code
+        if status != 200:
+            # Bei fehlgeschlagenem HEAD mit GET versuchen
+            resp = requests.get(entry["url"], allow_redirects=True, timeout=5)
+            status = resp.status_code
+        if status == 200:
+            entry["status_code"] = 200
+            valid_links.append(entry)
+        else:
+            removed_count += 1
+    except Exception:
+        removed_count += 1
 
-    data = {
-        "updated": now.isoformat() + "Z",
-        "count": len(final_links),
-        "links": final_links
-    }
+# 4. Statistiken berechnen
+total_valid = len(valid_links)
+by_source = {}
+for e in valid_links:
+    by_source[e["source"]] = by_source.get(e["source"], 0) + 1
 
-    with open(JSON_FILE, "w", encoding="utf-8") as f:
-        json.dump(data, f, indent=2, ensure_ascii=False)
+# 5. JSON-Ausgabe erstellen
+output = {
+    "generated": now.isoformat(),
+    "total_links": total_valid,
+    "by_source": by_source,
+    "removed": removed_count,
+    "expired": expired_count,
+    "links": valid_links
+}
+with open(DATA_FILE, "w", encoding="utf-8") as f:
+    json.dump(output, f, indent=2, ensure_ascii=False)
 
-    with open("index.html", "w", encoding="utf-8") as f:
-        f.write(build_html(final_links))
+# 6. HTML-Ausgabe erstellen (mit Bootstrap)
+html_rows = ""
+for e in valid_links:
+    first_seen = datetime.fromisoformat(e["first_seen"])
+    age_h = (now - first_seen).total_seconds() / 3600
+    # Verbleibende Stunden
+    hours_left = int((timedelta(hours=72) - (now - first_seen)).total_seconds() // 3600)
+    remaining = f"noch {hours_left}h" if hours_left >= 1 else "weniger 1h"
+    # Ampelfarbe
+    if age_h < 24:
+        amp = "🟢"; title = "<24h"
+    elif age_h < 48:
+        amp = "🟡"; title = "24–48h"
+    else:
+        amp = "🔴"; title = ">48h"
+    html_rows += f"""
+      <tr>
+        <td>{e['source']}</td>
+        <td><a href="{e['url']}" target="_blank">Öffnen</a></td>
+        <td>{first_seen.strftime('%Y-%m-%d %H:%M')}</td>
+        <td>{remaining}</td>
+        <td><span title="{title}">{amp}</span></td>
+      </tr>"""
 
-    print(f"\n✅ Update fertig – {len(final_links)} Links (≤24h)")
+html_content = f"""<!DOCTYPE html>
+<html lang="de"><head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coin Master Reward Links</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+</head><body>
+  <div class="container">
+    <h1>Coin Master Reward Links</h1>
+    <p>Gültige Links: {total_valid} (entfernt: {removed_count}, abgelaufen: {expired_count})</p>
+    <p>Pro Quelle: {" | ".join(f"{k}: {v}" for k,v in by_source.items())}</p>
+    <table class="table table-striped table-hover">
+      <thead><tr><th>Quelle</th><th>Link</th><th>Erstellt am</th><th>Verbleibend</th><th>Ampel</th></tr></thead>
+      <tbody>{html_rows}
+      </tbody>
+    </table>
+  </div>
+</body></html>"""
 
-if __name__ == "__main__":
-    main()
+with open("links.html", "w", encoding="utf-8") as f:
+    f.write(html_content)
